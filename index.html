@@ -647,22 +647,41 @@
         <div class="emoji-picker" id="emoji-picker"></div>
       </div>
       <div class="form-row">
-        <label>Ou envie uma foto do celular / computador</label>
+        <label>Ou digite o nome da foto da pasta <strong style="color:var(--accent2)">Fotos/</strong></label>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <span style="color:var(--muted);font-size:0.9rem;white-space:nowrap;">Fotos/</span>
+          <input type="text" id="new-filename" placeholder="acucar.jpg" oninput="previewFilename()" style="flex:1">
+        </div>
+        <img id="filename-preview" class="url-preview" alt="preview">
+      </div>
+      <div class="form-row">
+        <label>Ou envie uma foto do celular (salva no app)</label>
         <input type="file" id="new-file" accept="image/*" onchange="handleFileUpload(event)" style="display:none">
         <button type="button" class="btn-upload" onclick="document.getElementById('new-file').click()">
           📷 Escolher foto / tirar foto
         </button>
         <div id="upload-preview-wrap" style="display:none;margin-top:10px;text-align:center;">
-          <img id="upload-preview" style="max-width:100%;height:120px;object-fit:cover;border-radius:12px;border:2px solid var(--accent);" alt="preview">
+          <img id="upload-preview" style="max-width:100%;height:120px;object-fit:contain;border-radius:12px;border:2px solid var(--accent);background:#fff;" alt="preview">
           <button type="button" onclick="clearUpload()" style="display:block;margin:8px auto 0;background:var(--danger);border:none;border-radius:8px;color:#fff;padding:6px 16px;font-family:Nunito,sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;">✕ Remover foto</button>
         </div>
       </div>
       <div class="form-row">
-        <label>Ou cole o link de uma foto (URL)</label>
+        <label>Ou cole um link de foto da internet (URL)</label>
         <input type="text" id="new-url" placeholder="https://..." oninput="previewUrl()">
         <img id="url-preview" class="url-preview" alt="preview">
       </div>
       <button class="btn-add-item" onclick="addItem()">✅ Adicionar produto</button>
+    </div>
+
+    <div style="background:var(--card);border-radius:14px;padding:14px;margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <span style="font-size:0.85rem;color:var(--muted);font-weight:700;">💾 Espaço usado</span>
+        <span id="storage-info" style="font-size:0.85rem;color:var(--accent2);font-weight:900;"></span>
+      </div>
+      <div style="background:var(--surface);border-radius:6px;height:8px;overflow:hidden;">
+        <div id="storage-bar" style="height:100%;background:var(--accent);border-radius:6px;transition:width 0.3s;width:0%"></div>
+      </div>
+      <button class="btn-add-item" style="margin-top:12px;background:var(--surface);color:var(--accent2);border:1.5px solid var(--accent);" onclick="recompressAll()">🗜️ Corrigir fotos antigas (liberar espaço)</button>
     </div>
 
     <h3 style="color:var(--muted);font-size:0.95rem;margin-bottom:12px;">Produtos cadastrados</h3>
@@ -937,6 +956,7 @@ function updateBadge() {
 // ============================
 function renderAdmin() {
   renderEmojiPicker();
+  updateStorageInfo();
   const list = document.getElementById('manage-list');
   list.innerHTML = '';
   items.forEach(item => {
@@ -979,15 +999,25 @@ function handleFileUpload(event) {
   if (!file) return;
   const reader = new FileReader();
   reader.onload = function(e) {
-    const base64 = e.target.result;
-    // Show preview
-    document.getElementById('upload-preview').src = base64;
-    document.getElementById('upload-preview-wrap').style.display = 'block';
-    // Clear URL field to avoid conflict
-    document.getElementById('new-url').value = '';
-    document.getElementById('url-preview').style.display = 'none';
-    // Store temporarily
-    window._uploadedBase64 = base64;
+    const img = new Image();
+    img.onload = function() {
+      const MAX = 600;
+      let w = img.width, h = img.height;
+      if (w > MAX || h > MAX) {
+        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+        else { w = Math.round(w * MAX / h); h = MAX; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      const base64 = canvas.toDataURL('image/jpeg', 0.75);
+      document.getElementById('upload-preview').src = base64;
+      document.getElementById('upload-preview-wrap').style.display = 'block';
+      document.getElementById('new-url').value = '';
+      document.getElementById('url-preview').style.display = 'none';
+      window._uploadedBase64 = base64;
+    };
+    img.src = e.target.result;
   };
   reader.readAsDataURL(file);
 }
@@ -998,13 +1028,30 @@ function clearUpload() {
   document.getElementById('upload-preview-wrap').style.display = 'none';
 }
 
+function previewFilename() {
+  const name = document.getElementById('new-filename').value.trim();
+  const img = document.getElementById('filename-preview');
+  if (name) {
+    img.src = 'Fotos/' + name;
+    img.style.display = 'block';
+    // Clear other fields
+    document.getElementById('new-url').value = '';
+    document.getElementById('url-preview').style.display = 'none';
+    clearUpload();
+  } else {
+    img.style.display = 'none';
+  }
+}
+
 function previewUrl() {
   const url = document.getElementById('new-url').value.trim();
   const img = document.getElementById('url-preview');
   if (url) {
     img.src = url;
     img.style.display = 'block';
-    // Clear upload if URL typed
+    // Clear other fields
+    document.getElementById('new-filename').value = '';
+    document.getElementById('filename-preview').style.display = 'none';
     clearUpload();
   } else {
     img.style.display = 'none';
@@ -1014,13 +1061,17 @@ function previewUrl() {
 function addItem() {
   const name = document.getElementById('new-name').value.trim();
   const unit = document.getElementById('new-unit').value;
+  const filename = document.getElementById('new-filename').value.trim();
   const urlField = document.getElementById('new-url').value.trim();
-  const finalUrl = window._uploadedBase64 || urlField;
+  // Priority: folder path > upload > url
+  const finalUrl = filename ? 'Fotos/' + filename : (window._uploadedBase64 || urlField);
   if (!name) { alert('Digite o nome do produto!'); return; }
 
   items.push({ id: nextId++, name, emoji: selectedEmoji, url: finalUrl, unit });
   save();
   document.getElementById('new-name').value = '';
+  document.getElementById('new-filename').value = '';
+  document.getElementById('filename-preview').style.display = 'none';
   document.getElementById('new-url').value = '';
   document.getElementById('url-preview').style.display = 'none';
   clearUpload();
@@ -1046,6 +1097,55 @@ function showToast(msg) {
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function updateStorageInfo() {
+  try {
+    const used = new Blob(Object.values(localStorage)).size;
+    const limit = 5 * 1024 * 1024;
+    const pct = Math.min(100, Math.round(used / limit * 100));
+    const usedKB = (used / 1024).toFixed(0);
+    document.getElementById('storage-info').textContent = usedKB + ' KB / 5120 KB (' + pct + '%)';
+    const bar = document.getElementById('storage-bar');
+    bar.style.width = pct + '%';
+    bar.style.background = pct > 80 ? 'var(--danger)' : pct > 50 ? 'var(--accent2)' : 'var(--accent)';
+  } catch(e) {}
+}
+
+function compressBase64(base64, callback) {
+  const img = new Image();
+  img.onload = function() {
+    const MAX = 600;
+    let w = img.width, h = img.height;
+    if (w > MAX || h > MAX) {
+      if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+      else { w = Math.round(w * MAX / h); h = MAX; }
+    }
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+    callback(canvas.toDataURL('image/jpeg', 0.75));
+  };
+  img.src = base64;
+}
+
+function recompressAll() {
+  const needsWork = items.filter(i => i.url && i.url.startsWith('data:') && i.url.length > 80000);
+  if (needsWork.length === 0) { showToast('✅ Nenhuma foto para corrigir!'); return; }
+  let done = 0;
+  showToast('⏳ Corrigindo ' + needsWork.length + ' foto(s)...');
+  needsWork.forEach(item => {
+    compressBase64(item.url, function(compressed) {
+      item.url = compressed;
+      done++;
+      if (done === needsWork.length) {
+        save();
+        updateStorageInfo();
+        renderAdmin();
+        showToast('✅ ' + done + ' foto(s) corrigida(s)! Espaço liberado.');
+      }
+    });
+  });
 }
 
 // ============================
