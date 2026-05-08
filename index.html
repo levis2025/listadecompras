@@ -174,12 +174,11 @@
 <div class="toast" id="toast"></div>
 
 <script>
-let items = JSON.parse(localStorage.getItem('my_items')) || [
+let items = JSON.parse(localStorage.getItem('my_items_v2')) || [
   { id: 1, name: 'Arroz', url: 'img/arroz.png', emoji: '' },
-  { id: 2, name: 'Feijão', url: 'img/feijao.png', emoji: ''},
-  { id: 3, name: 'Café', url: 'img/cafe.png', emoji:''},
+  { id: 2, name: 'Feijão', url: 'img/feijao.png', emoji: '' },
+  { id: 3, name: 'Café', url: 'img/cafe.png', emoji: '' },
   { id: 4, name: 'Cappuccino', url: 'img/cappuccino.png', emoji: '' }
-  { id: 5, name: 'óleo', url: 'img/oleo.png', emoji: '' }
 ];
 let cart = JSON.parse(localStorage.getItem('my_cart')) || [];
 let modalItem = null;
