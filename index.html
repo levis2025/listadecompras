@@ -175,11 +175,33 @@
 
 <script>
 let items = JSON.parse(localStorage.getItem('my_items')) || [
-  { id: 1, name: 'Arroz', url: 'img/arroz.png', emoji: '🍚' },
-  { id: 2, name: 'Feijão', url: 'img/feijao.png', emoji: '🫘' },
-  { id: 3, name: 'Café', url: 'img/cafe.png', emoji: '☕' },
-  { id: 4, name: 'Açúcar', url: 'img/acucar.png', emoji: '🍬' },
-  { id: 5, name: 'Cappuccino', url: 'img/cappuccino.png', emoji: '' }
+  // Lista de produtos configurada para carregar automaticamente em qualquer aparelho
+let items = JSON.parse(localStorage.getItem('meus_produtos_v2')) || [
+  { id: 1, name: 'Açúcar', url: 'img/acucar.png', emoji: '' },
+  { id: 2, name: 'Arroz', url: 'img/arroz.png', emoji: '' },
+  { id: 3, name: 'Café', url: 'img/cafe.png', emoji: '' },
+  { id: 4, name: 'Cappuccino', url: 'img/cappuccino.png', emoji: '' },
+  { id: 5, name: 'Cracker Água e Sal', url: 'img/cracker-agua-e-sal.png', emoji: '' },
+  { id: 6, name: 'Detergente', url: 'img/detergente.png', emoji: '' },
+  { id: 7, name: 'Feijão', url: 'img/feijao.png', emoji: '' },
+  { id: 8, name: 'Macarrão', url: 'img/macarrao.png', emoji: '' },
+  { id: 9, name: 'Margarina', url: 'img/margarina.png', emoji: '' },
+  { id: 10, name: 'Molho de Tomate', url: 'img/molho-de-tomate.png', emoji: '' },
+  { id: 11, name: 'Nescau', url: 'img/nescau.png', emoji: '' },
+  { id: 12, name: 'Óleo', url: 'img/oleo.png', emoji: '' },
+  { id: 13, name: 'Omo', url: 'img/omo.png', emoji: '' },
+  { id: 14, name: 'Pipoca', url: 'img/pipoca.png', emoji: '' },
+  { id: 15, name: 'Sabão', url: 'img/sabao.png', emoji: '' },
+  { id: 16, name: 'Sabonete', url: 'img/sabonete.png', emoji: '' },
+  { id: 17, name: 'Vinagre', url: 'img/vinagre.png', emoji: '' }
+];
+
+// Função de salvar atualizada para a nova versão da lista
+function save() {
+  localStorage.setItem('meus_produtos_v2', JSON.stringify(items));
+  localStorage.setItem('my_cart', JSON.stringify(cart));
+  updateBadge();
+}
 ];
 let cart = JSON.parse(localStorage.getItem('my_cart')) || [];
 let modalItem = null;
