@@ -196,7 +196,6 @@ let items = JSON.parse(localStorage.getItem('meus_produtos_v2')) || [
   { id: 17, name: 'Vinagre', url: 'img/vinagre.png', emoji: '' }
 ];
 
-// Função de salvar atualizada para a nova versão da lista
 function save() {
   localStorage.setItem('meus_produtos_v2', JSON.stringify(items));
   localStorage.setItem('my_cart', JSON.stringify(cart));
