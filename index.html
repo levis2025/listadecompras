@@ -174,7 +174,7 @@
 <div class="toast" id="toast"></div>
 
 <script>
-let items = JSON.parse(localStorage.getItem('meus_produtos_v2')) || [
+let items = JSON.parse(localStorage.getItem('meus_produtos_v3')) || [
   { id: 1, name: 'Açúcar', url: 'img/acucar.png', emoji: '' },
   { id: 2, name: 'Arroz', url: 'img/arroz.png', emoji: '' },
   { id: 3, name: 'Café', url: 'img/cafe.png', emoji: '' },
@@ -191,11 +191,11 @@ let items = JSON.parse(localStorage.getItem('meus_produtos_v2')) || [
   { id: 14, name: 'Pipoca', url: 'img/pipoca.png', emoji: '' },
   { id: 15, name: 'Sabão', url: 'img/sabao.png', emoji: '' },
   { id: 16, name: 'Sabonete', url: 'img/sabonete.png', emoji: '' },
-  { id: 17, name: 'Vinagre', url: 'img/vinagre.png', emoji: '' }
+  { id: 17, name: 'Vinagre', url: 'img/vinagre.png', emoji: '' },
 ];
 
 function save() {
-  localStorage.setItem('meus_produtos_v2', JSON.stringify(items));
+  localStorage.setItem('meus_produtos_v3', JSON.stringify(items));
   localStorage.setItem('my_cart', JSON.stringify(cart));
   updateBadge();
 }
