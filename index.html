@@ -120,7 +120,7 @@
 
 <script>
 // --- LISTA DE PRODUTOS ---
-let items = JSON.parse(localStorage.getItem('meus_produtos_v4')) || [
+let items = JSON.parse(localStorage.getItem('meus_produtos_v5')) || [
   { id: 1, name: 'Açúcar', url: 'img/acucar.png', emoji: '' },
   { id: 2, name: 'Arroz', url: 'img/arroz.png', emoji: '' },
   { id: 3, name: 'Café', url: 'img/cafe.png', emoji: '' },
@@ -144,20 +144,19 @@ let items = JSON.parse(localStorage.getItem('meus_produtos_v4')) || [
   { id: 21, name: 'cebola', url: 'img/cebola.png', emoji: '' },
   { id: 22, name: 'alho', url: 'img/alho.png', emoji: '' },
   { id: 23, name: 'sal', url: 'img/sal.png', emoji: '' },
-  { id: 24, name: 'macarrao', url: 'img/macarrao.png', emoji: '' },
-  { id: 25, name: 'azeite', url: 'img/azeite.png', emoji: '' },
-  { id: 26, name: 'bombril', url: 'img/bombril.png', emoji: '' },
-  { id: 27, name: 'esponja de aço', url: 'img/esponja-de-aco.png', emoji: '' },
-  { id: 28, name: 'batata', url: 'img/batata.png', emoji: '' },
-  { id: 29, name: 'batata-doce', url: 'img/batata-doce.png', emoji: '' },
-  { id: 30, name: 'guarana', url: 'img/guarana.png', emoji: '' },
-  { id: 31, name: 'coco-ralado', url: 'img/coco-ralado.png', emoji: '' },
-  { id: 32, name: 'Farinha-de-Trigo', url: 'img/Farinha-de-Trigo.png', emoji: '' },
-  { id: 33, name: 'fermento', url: 'img/fermento.png', emoji: '' },
-  { id: 34, name: 'maizena', url: 'img/maizena.png', emoji: '' },
-  { id: 35, name: 'mistura-para-bolo', url: 'img/mistura-para-bolo.png', emoji: '' },
-  { id: 36, name: 'amaciante', url: 'img/amaciante.png', emoji: '' },
-  { id: 37, name: 'pedra-sanitaria', url: 'img/pedra-sanitaria.png', emoji: '' }
+  { id: 24, name: 'azeite', url: 'img/azeite.png', emoji: '' },
+  { id: 25, name: 'bombril', url: 'img/bombril.png', emoji: '' },
+  { id: 26, name: 'esponja de aço', url: 'img/esponja-de-aco.png', emoji: '' },
+  { id: 27, name: 'batata', url: 'img/batata.png', emoji: '' },
+  { id: 28, name: 'batata-doce', url: 'img/batata-doce.png', emoji: '' },
+  { id: 29, name: 'guarana', url: 'img/guarana.png', emoji: '' },
+  { id: 30, name: 'coco-ralado', url: 'img/coco-ralado.png', emoji: '' },
+  { id: 31, name: 'Farinha-de-Trigo', url: 'img/Farinha-de-Trigo.png', emoji: '' },
+  { id: 32, name: 'fermento', url: 'img/fermento.png', emoji: '' },
+  { id: 33, name: 'maizena', url: 'img/maizena.png', emoji: '' },
+  { id: 34, name: 'mistura-para-bolo', url: 'img/mistura-para-bolo.png', emoji: '' },
+  { id: 35, name: 'amaciante', url: 'img/amaciante.png', emoji: '' },
+  { id: 36, name: 'pedra-sanitaria', url: 'img/pedra-sanitaria.png', emoji: '' }
 ];
 
 let cart = JSON.parse(localStorage.getItem('my_cart')) || [];
@@ -257,7 +256,7 @@ function clearCart() {
 
 // --- UTILITÁRIOS ---
 function save() {
-  localStorage.setItem('meus_produtos_v4', JSON.stringify(items));
+  localStorage.setItem('meus_produtos_v5', JSON.stringify(items));
   localStorage.setItem('my_cart', JSON.stringify(cart));
   updateBadge();
 }
